@@ -38,15 +38,22 @@ class CoinData {
   Future getCoinData(String selectedCurrency) async {
     //TODO 4: Use a for loop here to loop through the cryptoList and request the data for each of them in turn.
     //TODO 5: Return a Map of the results instead of a single value.
-    String requestURL = '$bitcoinAverageURL/BTC$selectedCurrency';
-    http.Response response = await http.get(requestURL);
-    if (response.statusCode == 200) {
-      var decodedData = jsonDecode(response.body);
-      var lastPrice = decodedData['last'];
-      return lastPrice;
-    } else {
-      print(response.statusCode);
-      throw 'Problem with the get request';
+    for (int i = 0; i < cryptoList.length; i++) {
+      var coin = cryptoList[i];
+      print(coin);
+      String requestURL = '$bitcoinAverageURL/$coin$selectedCurrency';
+      http.Response response = await http.get(requestURL);
+      if (response.statusCode == 200) {
+        var decodedData = jsonDecode(response.body);
+        var lastPrice = decodedData['last'];
+        print(lastPrice);
+        return lastPrice;
+      } else {
+        print(response.statusCode);
+        throw 'Problem with the get request';
+      }
     }
+
+    
   }
 }
