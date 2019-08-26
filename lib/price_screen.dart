@@ -53,15 +53,20 @@ class _PriceScreenState extends State<PriceScreen> {
   }
 
   String value = '?';
-
+  Map coinVals = {};
+  bool isWaiting = false;
   //TODO 7: Figure out a way of displaying a '?' on screen while we're waiting for the price data to come back. Hint: You'll need a ternary operator.
 
   //TODO 6: Update this method to receive a Map containing the crypto:price key value pairs. Then use that map to update the CryptoCards.
   void getData() async {
+    isWaiting = true;
     try {
-      double data = await CoinData().getCoinData(selectedCurrency);
+
+      var data = await CoinData().getCoinData(selectedCurrency);
+      isWaiting = false;
+      print(data);
       setState(() {
-        value = data.toStringAsFixed(0);
+        coinVals = data;
       });
     } catch (e) {
       print(e);
@@ -90,9 +95,9 @@ class _PriceScreenState extends State<PriceScreen> {
           
           //TODO 2: You'll need to able to pass the selectedCurrency, value and cryptoCurrency to the constructor of this CryptoCard Widget.
           //TODO 3: You'll need to use a Column Widget to contain the three CryptoCards.
-          new CryptoCard(value: value, selectedCurrency: selectedCurrency, crypto: cryptoList[0],),
-          new CryptoCard(value: value, selectedCurrency: selectedCurrency, crypto: cryptoList[1],),
-          new CryptoCard(value: value, selectedCurrency: selectedCurrency, crypto: cryptoList[2],),
+          new CryptoCard(value: isWaiting ? '?' : coinVals['BTC'], selectedCurrency: selectedCurrency, crypto: cryptoList[0],),
+          new CryptoCard(value: isWaiting ? '?' : coinVals['ETH'], selectedCurrency: selectedCurrency, crypto: cryptoList[1],),
+          new CryptoCard(value: isWaiting ? '?' : coinVals['LTC'], selectedCurrency: selectedCurrency, crypto: cryptoList[2],),
           Container(
             height: 150.0,
             alignment: Alignment.center,
